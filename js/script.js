@@ -2,6 +2,8 @@ window.addEventListener('DOMContentLoaded', function(){
 
     'use strict';
 
+
+
     let tab = document.querySelectorAll('.info-header-tab'),
         info = document.querySelector('.info-header'),
         tabContent = document.querySelectorAll('.info-tabcontent');
@@ -35,4 +37,55 @@ window.addEventListener('DOMContentLoaded', function(){
         }
     });
 
+
+    //timer
+    let deadLine = '2022-07-24';
+
+    function getTimeRemaining(endTime){
+        let t = Date.parse(endTime) - Date.parse(new Date),
+            seconds = Math.floor((t/1000) % 60),
+            minutes = Math.floor((t/1000/60) % 60),
+            hours = Math.floor(t/1000/60/60);
+        
+        if (t < 0){
+            seconds = minutes = hours = '00';
+        }
+
+        function checkZero(num){
+            if (num >= 10){
+                return num;
+            } else {
+                return '0' + num;
+            }
+        }
+
+        return {
+            'total' : t,
+            'seconds' : checkZero(seconds),
+            'minutes' : checkZero(minutes),
+            'hours' : checkZero(hours)
+        };
+    }
+
+    function setClock(id,endTime){
+        let timer = document.getElementById(id),
+            hours = timer.querySelector('.hours'),
+            minutes = timer.querySelector('.minutes'),
+            seconds = timer.querySelector('.seconds'),
+            timeInterval = setInterval(updateClock,1000);
+
+        function updateClock(){
+            let t = getTimeRemaining(endTime);
+            hours.textContent = t.hours;
+            minutes.textContent = t.minutes;
+            seconds.textContent = t.seconds;
+
+            if(t.total < 0){
+                clearInterval(timeInterval);
+            }
+        }
+        
+    }
+
+    setClock('timer',deadLine);
 });

@@ -2,8 +2,6 @@ window.addEventListener('DOMContentLoaded', function(){
 
     'use strict';
 
-
-
     let tab = document.querySelectorAll('.info-header-tab'),
         info = document.querySelector('.info-header'),
         tabContent = document.querySelectorAll('.info-tabcontent');
@@ -106,7 +104,6 @@ window.addEventListener('DOMContentLoaded', function(){
         document.body.style.overflow = '';
     });
 
-    //modal window for header additional info
     let infoDiv = document.querySelector('.info');
     infoDiv.addEventListener('click', function(event){
         let target = event.target;
@@ -116,4 +113,31 @@ window.addEventListener('DOMContentLoaded', function(){
             document.body.style.overflow = 'hidden';
         }
     });
+
+    /*
+    class Options{
+        constructor(height, width){
+            this.height = height;
+            this.width = width;
+            this.bg = 'white';
+            this.fontSize = '14px';
+            this.textAlign = 'center';
+        }
+
+        createDiv = function(text) {
+            let div = document.createElement('div');
+            div.textContent = text;
+            div.style.background = this.bg;
+            div.style.fontSize = this.fontSize;
+            div.style.textAlign = this.textAlign;
+            div.style.height = this.height + 'px';
+            div.style.width = this.width + 'px';
+            return div;
+        }
+    }
+
+    let opt = new Options(200,400);
+    let div = opt.createDiv('Hello');
+    info.appendChild(div);
+    */
 });

@@ -132,73 +132,86 @@ window.addEventListener('DOMContentLoaded', function(){
 
     statusMessage.classList.add('status');
 
+    function clearInput(input){
+        for (let i = 0; i < input.length; i++) {
+            input[i].value = '';
+        }
+    }
     
+    form.addEventListener('submit', event => {
+        function sendRequest(event) {
+            return new Promise(function(resolve, reject){
+                let formData = new FormData(form);
+                let obj = {};
+                formData.forEach(function(value, key) {
+                    obj[key] = value;
+                });
+                let json = JSON.stringify(obj);
 
-    form.addEventListener('submit', function(event){
+                clearInput(input);
+                form.appendChild(statusMessage);    
+
+                let request = new XMLHttpRequest();
+                request.open('POST', 'server.php');
+                request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                request.send(json);
+                
+
+                request.addEventListener('readystatechange',() =>{
+                    if (request.readyState < 4) {
+                        resolve();
+                    } else if(request.readyState === 4 && request.status == 200) {
+                        resolve();
+                    } else {
+                        reject();
+                    }
+                });
+            });
+        }
         event.preventDefault();
-        form.appendChild(statusMessage);
-        let request = new XMLHttpRequest();
-        request.open('POST', 'server.php');
-        request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-
-        let formData = new FormData(form);
-
-        let obj = {};
-        formData.forEach(function(value, key) {
-            obj[key] = value;
-        });
-        let json = JSON.stringify(obj);
-
-        request.send(json);
-
-        request.addEventListener('readystatechange', function() {
-            if (request.readyState < 4) {
-                statusMessage.innerHTML = message.loading;
-            } else if(request.readyState === 4 && request.status == 200) {
-                statusMessage.innerHTML = message.success;
-            } else {
-                statusMessage.innerHTML = message.failure;
-            }
-        });
-
-            for (let i = 0; i < input.length; i++) {
-                input[i].value = '';
-            }
+        sendRequest()
+        .then(() => {statusMessage.innerHTML = message.loading;console.log(1);})
+        .then(() => {statusMessage.innerHTML = message.success;console.log(2)})
+        .catch(() => {statusMessage.innerHTML = message.failure;console.log(3)});
     });
 
     //Contact form
     let contactForm = document.querySelector('form'),
         contactInput = contactForm.getElementsByTagName('input');
     
-    contactForm.addEventListener('submit', function(event){
+    contactForm.addEventListener('submit', event => {
+        function sendConact(event) {
+            return new Promise(function(resolve,reject){
+                contactForm.appendChild(statusMessage);
+
+                let formData = new FormData(contactForm);
+                let obj = {};
+                formData.forEach(function(value, key) {
+                    obj[key] = value;
+                });
+                let json = JSON.stringify(obj);
+                clearInput(contactInput);
+                
+                let request = new XMLHttpRequest();
+                request.open('POST', 'server.php');
+                request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                request.send(json);
+                
+                request.addEventListener('readystatechange',() =>{
+                    if (request.readyState < 4) {
+                        resolve();
+                    } else if(request.readyState === 4 && request.status == 200) {
+                        resolve();
+                    } else {
+                        reject();
+                    }
+                });
+            });
+        } 
         event.preventDefault();
-        contactForm.appendChild(statusMessage);
-
-        let formData = new FormData(contactForm);
-
-        let obj = {};
-        formData.forEach(function(value, key) {
-            obj[key] = value;
-        });
-        let json = JSON.stringify(obj);
-
-        let request = new XMLHttpRequest();
-        request.open('POST', 'server.php');
-        request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        request.send(json);
-
-        request.addEventListener('readystatechange', function() {
-            if (request.readyState < 4) {
-                statusMessage.innerHTML = message.loading;
-            } else if(request.readyState === 4 && request.status == 200) {
-                statusMessage.innerHTML = message.success;
-            } else {
-                statusMessage.innerHTML = message.failure;
-            }
-        });
-
-        for (let i = 0; i < contactInput.length; i++) {
-            contactInput[i].value = '';
-        }
+        sendConact()
+        .then(() => {statusMessage.innerHTML = message.loading;console.log(1);})
+        .then(() => {statusMessage.innerHTML = message.success;console.log(2)})
+        .catch(() => {statusMessage.innerHTML = message.failure;console.log(3)});
     });
 });

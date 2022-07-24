@@ -78,8 +78,12 @@ window.addEventListener('DOMContentLoaded', function(){
             minutes.textContent = t.minutes;
             seconds.textContent = t.seconds;
 
-            if(t.total < 0){
+            if(t.total <= 0){
                 clearInterval(timeInterval);
+                hours.textContent = '00';
+                minutes.textContent = '00';
+                seconds.textContent = '00';
+
             }
         }
         
@@ -114,30 +118,87 @@ window.addEventListener('DOMContentLoaded', function(){
         }
     });
 
-    /*
-    class Options{
-        constructor(height, width){
-            this.height = height;
-            this.width = width;
-            this.bg = 'white';
-            this.fontSize = '14px';
-            this.textAlign = 'center';
-        }
+    
+    // Form
+    let message = {
+        loading: 'Загрузка...',
+        success: 'Спасибо! Скоро мы с вами свяжемся!',
+        failure: 'Что-то пошло не так...'
+    };
 
-        createDiv = function(text) {
-            let div = document.createElement('div');
-            div.textContent = text;
-            div.style.background = this.bg;
-            div.style.fontSize = this.fontSize;
-            div.style.textAlign = this.textAlign;
-            div.style.height = this.height + 'px';
-            div.style.width = this.width + 'px';
-            return div;
-        }
-    }
+    let form = document.querySelector('.main-form'),
+        input = form.getElementsByTagName('input'),
+        statusMessage = document.createElement('div');
 
-    let opt = new Options(200,400);
-    let div = opt.createDiv('Hello');
-    info.appendChild(div);
-    */
+    statusMessage.classList.add('status');
+
+    
+
+    form.addEventListener('submit', function(event){
+        event.preventDefault();
+        form.appendChild(statusMessage);
+        let request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+
+        let formData = new FormData(form);
+
+        let obj = {};
+        formData.forEach(function(value, key) {
+            obj[key] = value;
+        });
+        let json = JSON.stringify(obj);
+
+        request.send(json);
+
+        request.addEventListener('readystatechange', function() {
+            if (request.readyState < 4) {
+                statusMessage.innerHTML = message.loading;
+            } else if(request.readyState === 4 && request.status == 200) {
+                statusMessage.innerHTML = message.success;
+            } else {
+                statusMessage.innerHTML = message.failure;
+            }
+        });
+
+            for (let i = 0; i < input.length; i++) {
+                input[i].value = '';
+            }
+    });
+
+    //Contact form
+    let contactForm = document.querySelector('form'),
+        contactInput = contactForm.getElementsByTagName('input');
+    
+    contactForm.addEventListener('submit', function(event){
+        event.preventDefault();
+        contactForm.appendChild(statusMessage);
+
+        let formData = new FormData(contactForm);
+
+        let obj = {};
+        formData.forEach(function(value, key) {
+            obj[key] = value;
+        });
+        let json = JSON.stringify(obj);
+
+        let request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        request.send(json);
+
+        request.addEventListener('readystatechange', function() {
+            if (request.readyState < 4) {
+                statusMessage.innerHTML = message.loading;
+            } else if(request.readyState === 4 && request.status == 200) {
+                statusMessage.innerHTML = message.success;
+            } else {
+                statusMessage.innerHTML = message.failure;
+            }
+        });
+
+        for (let i = 0; i < contactInput.length; i++) {
+            contactInput[i].value = '';
+        }
+    });
 });

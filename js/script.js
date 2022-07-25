@@ -214,4 +214,93 @@ window.addEventListener('DOMContentLoaded', function(){
         .then(() => {statusMessage.innerHTML = message.success;console.log(2)})
         .catch(() => {statusMessage.innerHTML = message.failure;console.log(3)});
     });
+
+
+    //Slider
+    let slideIndex = 1,
+        slides = document.querySelectorAll('.slider-item'),
+        prev = document.querySelector('.prev'),
+        next = document.querySelector('.next'),
+        dotsWrap = document.querySelector('.slider-dots'),
+        dots = document.querySelectorAll('.dot');
+
+    showSlides(slideIndex);
+
+    function showSlides(n){
+        if (n > slides.length) {
+            slideIndex = 1;
+        }
+        if (n < 1) {
+            slideIndex = slides.length;
+        }
+        slides.forEach((item) => item.style.display = 'none');
+        dots.forEach((item) => item.classList.remove('dot-active'));
+
+        slides[slideIndex - 1].style.display = 'block';
+        dots[slideIndex - 1].classList.add('dot-active');
+    }
+
+    function plusSlides(n){
+        showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n){
+        showSlides(slideIndex = n);
+    }
+
+    prev.addEventListener('click', () => plusSlides(-1));
+    next.addEventListener('click',() => plusSlides(1));
+    dotsWrap.addEventListener('click', function(event){
+        for (let i = 0; i < dots.length; i++){
+            if(event.target.classList.contains('dot') && event.target == dots[i]){
+                currentSlide(i+1);
+            }
+        }
+    });
+
+    // Calculator
+    let persons = document.querySelectorAll('.counter-block-input')[0],
+        restDays = document.querySelectorAll('.counter-block-input')[1],
+        place = document.getElementById('select'),
+        totalValue = document.getElementById('total'),
+        personsSum = 0,
+        daysSum = 0,
+        total = 0;
+
+    totalValue.textContent = total;
+
+    persons.addEventListener('input', function(){
+        personsSum = +this.value;
+        if(personsSum == 0) {
+            totalValue.textContent = 0;
+            return;
+        }
+        total = (daysSum + personsSum)*4000;
+        if(!restDays.value){
+            totalValue.textContent = 0;
+        } else {
+            totalValue.textContent = total;
+        }
+    });
+
+    restDays.addEventListener('input', function(){
+        daysSum = +this.value;
+        if(daysSum == 0) {
+            totalValue.textContent = 0;
+            return;
+        }
+        total = (daysSum + personsSum)*4000;
+        if(!persons.value){
+            totalValue.textContent = 0;
+        } else {
+            totalValue.textContent = total;
+        }
+    });
+    place.addEventListener('change', function(){
+        if(persons.value == '' || restDays.value == ''){
+            totalValue.textContent = 0;
+        } else{
+            totalValue.textContent = total * this.options[this.selectedIndex].value;
+        }
+    });
 });
